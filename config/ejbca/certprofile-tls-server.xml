@@ -1,0 +1,21 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<certprofile>
+  <name>tls-server</name>
+  <description>TLS server authentication (ECDSA P-256)</description>
+  <type>ENDENTITY</type>
+  <availablekeyalgorithms>
+    <algorithm>ECDSA</algorithm>
+  </availablekeyalgorithms>
+  <availablebitlengths>
+    <length>256</length>
+  </availablebitlengths>
+  <keyusages>
+    <usage>digitalSignature</usage>
+    <usage>keyEncipherment</usage>
+  </keyusages>
+  <extendedkeyusages>
+    <usage>serverAuth</usage>
+  </extendedkeyusages>
+  <subjectalternativenamecritical>false</subjectalternativenamecritical>
+  <usesubjectdnsans>true</usesubjectdnsans>
+</certprofile>

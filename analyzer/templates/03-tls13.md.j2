@@ -1,0 +1,54 @@
+{# TLS 1.3 report -#}
+# TLS 1.3 Handshake — Mutual Authentication with ECDSA P-256
+
+## 1. Capture summary
+
+- **pcap**: `output/pcap/tls13.pcap`
+- **Packets**: {{ tls.packet_count }}
+- **Duration**: ~{{ "%.1f"|format(tls.duration_ms) }} ms
+- **Client → Server**: {{ tls.client_addr }} → {{ tls.server_addr }}:4444
+- **Decryption**: `output/pki/sslkeys-tls13.log` (client SSLKEYLOG)
+
+## 2. Handshake at a glance
+
+{{ tls.mermaid }}
+
+## 3. Negotiated parameters
+
+| Parameter | Value |
+|-----------|-------|
+| Protocol | TLS 1.3 |
+| Ciphersuite | {{ tls.negotiated_cipher_friendly }} |
+| Key share | {{ tls.key_share_friendly }} |
+| Signature scheme | {{ tls.sigalg_friendly }} |
+| Client auth | mTLS |
+
+## 4. Per-message walk-through
+
+{% for step in tls.handshake_steps %}
+### {{ loop.index }}. {{ step.msg_type }} (packet #{{ step.packet_num }})
+
+- Time: {{ step.time }}
+{% if step.cipher %}- Cipher / suite: {{ step.cipher }}
+{% endif %}
+{% if step.sigalg %}- Sig scheme: {{ step.sigalg }}
+{% endif %}
+- Length: {{ step.length }} bytes
+
+{% else %}
+*(No handshake messages decoded.)*
+{% endfor %}
+
+## 5. Encrypted handshake note
+
+After **ServerHello**, TLS 1.3 protects subsequent handshake messages with **handshake traffic keys**. Wireshark/tshark need the **SSLKEYLOG** file from the curl client to decrypt **EncryptedExtensions**, **Certificate**, **CertificateVerify**, and **Finished** records.
+
+## 6. Application data
+
+- Application data bytes (approx): {{ tls.app_data_bytes }}
+- {{ tls.http_request }}
+- {{ tls.http_response_hint }}
+
+## 7. Negotiation vs. this lab
+
+This lab pins a **single ciphersuite** per listener for deterministic captures. In production, ClientHello would offer multiple suites and the server would pick one — the message order remains similar but extension lists grow.

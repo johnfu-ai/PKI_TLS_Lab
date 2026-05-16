@@ -1,0 +1,18 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<certprofile>
+  <name>tls-client</name>
+  <description>TLS client authentication (ECDSA P-256)</description>
+  <type>ENDENTITY</type>
+  <availablekeyalgorithms>
+    <algorithm>ECDSA</algorithm>
+  </availablekeyalgorithms>
+  <availablebitlengths>
+    <length>256</length>
+  </availablebitlengths>
+  <keyusages>
+    <usage>digitalSignature</usage>
+  </keyusages>
+  <extendedkeyusages>
+    <usage>clientAuth</usage>
+  </extendedkeyusages>
+</certprofile>

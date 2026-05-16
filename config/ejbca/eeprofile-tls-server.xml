@@ -1,0 +1,15 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<endentityprofile>
+  <name>tls-server</name>
+  <description>End entity profile for TLS server certs</description>
+  <defaultcertificateprofile>tls-server</defaultcertificateprofile>
+  <defaultca>LabRootCA</defaultca>
+  <subjectdnattributes>
+    <attribute required="true">CN</attribute>
+    <attribute required="false">O</attribute>
+    <attribute required="false">C</attribute>
+  </subjectdnattributes>
+  <subjectaltnameattributes>
+    <attribute type="dNSName" required="false"/>
+  </subjectaltnameattributes>
+</endentityprofile>

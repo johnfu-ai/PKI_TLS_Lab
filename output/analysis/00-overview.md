@@ -1,0 +1,50 @@
+# PKI_TLS_Lab — Overview
+
+Cross-cutting summary of the lab run: CMP enrollment, TLS 1.2, and TLS 1.3 mutual authentication with ECDSA P-256.
+
+## Artifacts
+
+| Artifact | Location |
+|----------|----------|
+| CMP capture | `output/pcap/cmp.pcap` |
+| TLS 1.2 capture | `output/pcap/tls12.pcap` |
+| TLS 1.3 capture | `output/pcap/tls13.pcap` |
+| SSLKEYLOG (1.2) | `output/pki/sslkeys-tls12.log` |
+| SSLKEYLOG (1.3) | `output/pki/sslkeys-tls13.log` |
+
+## Capture statistics
+
+- **CMP**: 8 packets on wire; 8 CMP messages decoded
+- **TLS 1.2**: 6 packets; duration ~6.3 ms
+- **TLS 1.3**: 7 packets; duration ~4.0 ms
+
+## Cryptography (pinned for determinism)
+
+- **Curve**: P-256 (`prime256v1`) for CA, CMP enrollment, and TLS
+- **TLS 1.2 cipher**: ECDHE-ECDSA-AES256-GCM-SHA384
+- **TLS 1.3 ciphersuite**: TLS_AES_256_GCM_SHA384 with `ecdsa_secp256r1_sha256`
+
+## End-entity certificates
+
+### client
+- Subject: `CN=tls-client.lab.local,O=PKI_TLS_Lab,C=US`
+- Curve: secp256r1 (256 bits)
+- SANs: tls-client.lab.local
+### server
+- Subject: `CN=tls-server.lab.local,O=PKI_TLS_Lab,C=US`
+- Curve: secp256r1 (256 bits)
+- SANs: tls-server.lab.local
+
+## Sanity checks
+
+- Certificate chain validation: PASS
+- Server SAN/CN matches tls-server.lab.local: PASS
+- CMP messages decoded: 8
+- TLS 1.2 handshake packets: 6, cipher: 0xc02c
+- TLS 1.3 handshake packets: 7, cipher: 0x1302
+
+## Reports
+
+1. [CMP enrollment](01-cmp-enrollment.md)
+2. [TLS 1.2 handshake](02-tls12-handshake.md)
+3. [TLS 1.3 handshake](03-tls13-handshake.md)

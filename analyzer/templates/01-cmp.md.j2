@@ -1,0 +1,48 @@
+# CMP Enrollment — Protocol Analysis
+
+Certificate enrollment via **CMP** (RFC 4210) against an **OpenSSL CMP mock responder** using **ECDSA P-256** keys. The client (`openssl cmp`) authenticates requests with a **shared secret** and the responder signs replies with the **Lab Root CA**'s ECDSA key.
+
+## 1. Capture summary
+
+- **pcap**: `output/pcap/cmp.pcap`
+- **Packets (total in filter)**: {{ cmp.packet_count }}
+- **CMP messages decoded**: {{ cmp.messages|length }}
+
+## 2. Enrollment at a glance
+
+{{ cmp.mermaid }}
+
+## 3. Message table
+
+| Time | Direction | PKIBody | Transaction ID | Protection |
+|------|-----------|---------|----------------|------------|
+{% for row in cmp.summary_rows %}
+| {{ row.time }} | {{ row.direction }} | {{ row.pki_body }} | {{ row.transaction_id }} | {{ row.protection }} |
+{% else %}
+| *(no CMP messages decoded)* | | | | |
+{% endfor %}
+
+## 4. PKIBody types observed
+
+The lab runs **two transactions per role** (client and server):
+
+1. **Initialization Request (`ir`)** with `-implicit_confirm` — minimal 2-message exchange (`ir` → `ip`).
+2. **Certificate Request (`cr`)** without implicit confirm — full 4-message exchange (`cr` → `cp` → `certConf` → `pkiConf`).
+
+| PKIBody | Tag | Direction (typical) |
+|---------|-----|---------------------|
+| ir | 0 | client → CA |
+| ip | 1 | CA → client |
+| cr | 2 | client → CA |
+| cp | 3 | CA → client |
+| certConf | 24 | client → CA |
+| pkiConf | 19 | CA → client |
+
+## 5. Protection algorithms
+
+- **Request**: `id-PasswordBasedMac` (HMAC-SHA1 OWF) with shared secret configured on the CMP alias.
+- **Response**: ECDSA signature with the CA key (`ecdsa-with-SHA256` on P-256).
+
+## 6. Wireshark tips
+
+Open `cmp.pcap` and filter `cmp`. Expand **Certificate Management Protocol** → **PKIMessage** → **PKIBody** to inspect ASN.1 structure.

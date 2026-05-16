@@ -1,0 +1,13 @@
+HTTP/1.1 200 OK
+Server: nginx/1.27.5
+Date: Sat, 16 May 2026 14:24:22 GMT
+Content-Type: text/html
+Content-Length: 384
+Last-Modified: Sat, 16 May 2026 13:01:05 GMT
+Connection: keep-alive
+ETag: "6a086a91-180"
+X-TLS-Version: TLSv1.3
+X-TLS-Cipher: TLS_AES_256_GCM_SHA384
+X-Client-CN: CN=tls-client.lab.local,O=PKI_TLS_Lab,C=US
+Accept-Ranges: bytes
+

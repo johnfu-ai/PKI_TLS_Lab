@@ -1,0 +1,46 @@
+networks:
+  pkilab_net:
+    name: pkilab_net
+    driver: bridge
+    ipam:
+      config:
+        - subnet: 10.30.0.0/24
+
+volumes:
+  pkilab_pki:
+    name: pkilab_pki
+
+services:
+  pki-ca:
+    build: ./images/pki-ca
+    image: pkilab/pki-ca
+    container_name: pki-ca
+    hostname: pki-ca
+    networks:
+      - pkilab_net
+    environment:
+      CMP_SHARED_SECRET: "${CMP_SHARED_SECRET:-lab-cmp-secret-2026}"
+    volumes:
+      - pkilab_pki:/pki
+    healthcheck:
+      test: ["CMD-SHELL", "test -f /pki/.ca-bootstrap.done"]
+      interval: 2s
+      timeout: 2s
+      retries: 30
+      start_period: 5s
+
+  tls-server:
+    build: ./images/tls-server
+    image: pkilab/tls-server
+    container_name: tls-server
+    hostname: tls-server
+    profiles: ["tls"]
+    networks:
+      pkilab_net:
+        aliases:
+          - tls-server.lab.local
+    volumes:
+      - pkilab_pki:/pki:ro
+    depends_on:
+      pki-ca:
+        condition: service_healthy

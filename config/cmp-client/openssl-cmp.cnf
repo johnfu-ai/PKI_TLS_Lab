@@ -1,0 +1,8 @@
+[cmp]
+server = pki-ca:8080
+path = /ejbca/publicweb/cmp/cmp-alias
+recipient = "/CN=LabRootCA"
+trusted = /pki/ca-chain.pem
+secret = pass:lab-cmp-secret-2026
+cmd = ir
+popo = SIGNATURE
